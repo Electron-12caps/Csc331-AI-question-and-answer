@@ -1,0 +1,5 @@
+flask
+openai>=1.0.0
+python-dotenv
+jinja2
+gunicorn
