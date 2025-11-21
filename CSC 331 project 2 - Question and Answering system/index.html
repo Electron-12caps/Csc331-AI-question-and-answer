@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>LLM Q&A Web GUI</title>
+<link rel="stylesheet" href="..\static\style.css">
+</head>
+<body>
+<main class="container">
+<h1>LLM Q&A Web GUI</h1>
+
+
+<form id="qa-form">
+<label for="question">Enter your question</label>
+<textarea id="question" name="question" rows="3" placeholder="Ask anything..."></textarea>
+<button type="submit">Ask LLM</button>
+</form>
+
+
+<section id="results" class="card hidden">
+<h2>Processed question</h2>
+<pre id="processed"></pre>
+
+
+<h2>LLM response</h2>
+<pre id="llm_response"></pre>
+
+
+<h2>Final answer</h2>
+<pre id="final_answer"></pre>
+</section>
+
+
+<footer>
+<small>Make sure to set OPENAI_API_KEY on the host before running.</small>
+</footer>
+</main>
+
+
+<script>
+const form = document.getElementById('qa-form');
+const results = document.getElementById('results');
+const processedEl = document.getElementById('processed');
+const llmEl = document.getElementById('llm_response');
+const finalEl = document.getElementById('final_answer');
+
+
+form.addEventListener('submit', async (e) => {
+e.preventDefault();
+const question = document.getElementById('question').value;
+if (!question.trim()) return alert('Please type a question.');
+
+
+// call server
+const resp = await fetch('/ask', {
+method: 'POST',
+headers: { 'Content-Type': 'application/json' },
+body: JSON.stringify({ question }),
+});
+const data = await resp.json();
+
+
+processedEl.textContent = JSON.stringify(data.processed, null, 2);
+llmEl.textContent = data.llm_response;
+finalEl.textContent = data.final_answer;
+results.classList.remove('hidden');
+});
+</script>
+</body>
+</html>
